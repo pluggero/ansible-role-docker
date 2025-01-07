@@ -1,0 +1,38 @@
+---
+- name: Ensure we are using pacman
+  ansible.builtin.fail:
+    msg: "This role only supports {{ ansible_os_family }} systems that use pacman as a package manager."
+  when: ansible_pkg_mgr != "pacman"
+
+- name: Install docker via pacman
+  when: ansible_pkg_mgr == "pacman"
+  block:
+    - name: Update pacman cache
+      community.general.pacman:
+        update_cache: true
+      become: true
+
+    - name: Ensure docker is installed
+      community.general.pacman:
+        name: "{{ docker_distro_pkgs }}"
+        state: present
+      notify: restart docker
+      become: true
+
+    - name: Ensure handlers are notified now to avoid firewall conflicts
+      meta: flush_handlers
+
+- name: Install docker-compose via pacman
+  when: ansible_pkg_mgr == "pacman"
+  block:
+    - name: Update pacman cache
+      community.general.pacman:
+        update_cache: true
+      become: true
+
+    - name: Ensure docker-compose is installed
+      community.general.pacman:
+        name: "{{ docker_compose_distro_pkgs }}"
+        state: present
+      notify: restart docker
+      become: true

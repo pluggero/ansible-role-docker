@@ -1,0 +1,13 @@
+---
+docker_dep_pkgs:
+  - apt-transport-https
+  - ca-certificates
+  - curl
+
+docker_distro_pkgs:
+  - docker-ce
+  - docker-ce-cli
+  - containerd.io
+
+docker_compose_distro_pkgs:
+  - docker-compose-plugin

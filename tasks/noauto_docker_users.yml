@@ -1,0 +1,28 @@
+---
+- name: Check if users are in the docker group
+  ansible.builtin.shell: "id -nG {{ user }} | grep -qw docker"
+  register: user_in_docker_group
+  ignore_errors: true
+  changed_when: false
+  loop: "{{ docker_users }}"
+  loop_control:
+    loop_var: user
+
+- name: Debug user in docker group results
+  ansible.builtin.debug:
+    msg: "User {{ user }} is not in the docker group."
+  when: user_in_docker_group is failed
+  loop: "{{ docker_users }}"
+  loop_control:
+    loop_var: user
+
+- name: Add users to the docker group if not present
+  ansible.builtin.user:
+    name: "{{ user }}"
+    groups: docker
+    append: yes
+  when: user_in_docker_group is failed
+  loop: "{{ docker_users }}"
+  loop_control:
+    loop_var: user
+  become: true

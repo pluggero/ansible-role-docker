@@ -1,0 +1,15 @@
+---
+- name: Configuring docker
+  block:
+    - name: Ensure docker started (and enabled if chosen)
+      ansible.builtin.service:
+        name: docker
+        state: "started"
+        enabled: "{{ docker_service_enabled }}"
+      ignore_errors: "{{ ansible_check_mode }}"
+      when: docker_service_manage | bool
+      become: true
+
+    - name: Configure docker users
+      ansible.builtin.include_tasks:
+        file: noauto_docker_users.yml

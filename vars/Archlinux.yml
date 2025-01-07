@@ -1,0 +1,8 @@
+---
+docker_dep_pkgs:
+
+docker_distro_pkgs:
+  - docker
+
+docker_compose_distro_pkgs:
+  - docker-compose
