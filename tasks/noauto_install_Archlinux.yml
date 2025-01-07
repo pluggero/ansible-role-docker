@@ -20,7 +20,7 @@
       become: true
 
     - name: Ensure handlers are notified now to avoid firewall conflicts
-      meta: flush_handlers
+      ansible.builtin.meta: flush_handlers
 
 - name: Install docker-compose via pacman
   when: ansible_pkg_mgr == "pacman"
