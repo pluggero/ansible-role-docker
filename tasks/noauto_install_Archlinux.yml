@@ -16,7 +16,7 @@
       community.general.pacman:
         name: "{{ docker_distro_pkgs }}"
         state: present
-      notify: restart docker
+      notify: Restart Docker
       become: true
 
     - name: Ensure handlers are notified now to avoid firewall conflicts
@@ -34,5 +34,5 @@
       community.general.pacman:
         name: "{{ docker_compose_distro_pkgs }}"
         state: present
-      notify: restart docker
+      notify: Restart Docker
       become: true
