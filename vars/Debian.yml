@@ -3,6 +3,7 @@ docker_dep_pkgs:
   - apt-transport-https
   - ca-certificates
   - curl
+  - gpg
 
 docker_distro_pkgs:
   - docker-ce

@@ -4,6 +4,37 @@
     msg: "This role only supports {{ ansible_os_family }} systems that use apt as a package manager."
   when: ansible_pkg_mgr != "apt"
 
+- name: Install docker dependencies via apt
+  block:
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 3600
+      become: true
+
+    # These are unofficial distrobutions of Docker that can cause conflicting packages
+    # See https://docs.docker.com/engine/install/debian/#uninstall-old-versions
+    - name: Ensure old versions of Docker are not installed
+      ansible.builtin.apt:
+        name:
+          - docker
+          - docker.io
+          - docker-engine
+          - podman-docker
+          - containerd
+          - runc
+        state: absent
+      become: true
+
+    - name: Ensure docker dependencies are installed
+      ansible.builtin.apt:
+        name: "{{ package }}"
+        state: present
+      loop: "{{ docker_dep_pkgs }}"
+      loop_control:
+        loop_var: package
+      become: true
+
 - name: Add Docker apt key and repository
   when: ansible_pkg_mgr == "apt"
   block:
@@ -31,33 +62,4 @@
         state: present
         filename: "{{ docker_apt_filename }}"
         update_cache: true
-      become: true
-
-- name: Install docker dependencies via apt
-  when: ansible_pkg_mgr == "apt"
-  block:
-    - name: Update apt cache
-      ansible.builtin.apt:
-        update_cache: true
-        cache_valid_time: 3600
-      become: true
-
-    # These are unofficial distrobutions of Docker that can cause conflicting packages
-    # See https://docs.docker.com/engine/install/debian/#uninstall-old-versions
-    - name: Ensure old versions of Docker are not installed
-      ansible.builtin.apt:
-        name:
-          - docker
-          - docker.io
-          - docker-engine
-          - podman-docker
-          - containerd
-          - runc
-        state: absent
-      become: true
-
-    - name: Ensure docker dependencies are installed
-      ansible.builtin.apt:
-        name: "{{ docker_dep_pkgs }}"
-        state: present
       become: true
