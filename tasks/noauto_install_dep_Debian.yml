@@ -16,14 +16,17 @@
     # See https://docs.docker.com/engine/install/debian/#uninstall-old-versions
     - name: Ensure old versions of Docker are not installed
       ansible.builtin.apt:
-        name:
-          - docker
-          - docker.io
-          - docker-engine
-          - podman-docker
-          - containerd
-          - runc
+        name: "{{ package }}"
         state: absent
+      loop:
+        - docker
+        - docker.io
+        - docker-engine
+        - podman-docker
+        - containerd
+        - runc
+      loop_control:
+        loop_var: package
       become: true
 
     - name: Ensure docker dependencies are installed

@@ -5,7 +5,6 @@
   when: ansible_pkg_mgr != "apt"
 
 - name: Install docker via apt
-  when: ansible_pkg_mgr == "apt"
   block:
     - name: Update apt cache
       ansible.builtin.apt:
@@ -15,8 +14,11 @@
 
     - name: Ensure docker is installed
       ansible.builtin.apt:
-        name: "{{ docker_distro_pkgs }}"
+        name: "{{ package }}"
         state: present
+      loop: "{{ docker_distro_pkgs }}"
+      loop_control:
+        loop_var: package
       notify: Restart Docker
       become: true
 
@@ -24,7 +26,6 @@
       ansible.builtin.meta: flush_handlers
 
 - name: Install docker-compose via apt
-  when: ansible_pkg_mgr == "apt"
   block:
     - name: Update apt cache
       ansible.builtin.apt:
@@ -34,7 +35,10 @@
 
     - name: Ensure docker-compose is installed
       ansible.builtin.apt:
-        name: "{{ docker_compose_distro_pkgs }}"
+        name: "{{ package }}"
         state: present
+      loop: "{{ docker_compose_distro_pkgs }}"
+      loop_control:
+        loop_var: package
       notify: Restart Docker
       become: true
