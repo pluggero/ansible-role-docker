@@ -5,7 +5,6 @@
   when: ansible_pkg_mgr != "pacman"
 
 - name: Install docker via pacman
-  when: ansible_pkg_mgr == "pacman"
   block:
     - name: Update pacman cache
       community.general.pacman:
@@ -14,8 +13,11 @@
 
     - name: Ensure docker is installed
       community.general.pacman:
-        name: "{{ docker_distro_pkgs }}"
+        name: "{{ package }}"
         state: present
+      loop: "{{ docker_distro_pkgs }}"
+      loop_control:
+        loop_var: package
       notify: Restart Docker
       become: true
 
@@ -32,7 +34,10 @@
 
     - name: Ensure docker-compose is installed
       community.general.pacman:
-        name: "{{ docker_compose_distro_pkgs }}"
+        name: "{{ package }}"
         state: present
+      loop: "{{ docker_compose_distro_pkgs }}"
+      loop_control:
+        loop_var: package
       notify: Restart Docker
       become: true

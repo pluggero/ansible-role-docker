@@ -1,5 +1,5 @@
 ---
-docker_dep_pkgs:
+docker_dep_pkgs: []
 
 docker_distro_pkgs:
   - docker
