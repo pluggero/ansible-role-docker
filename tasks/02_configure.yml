@@ -13,3 +13,8 @@
     - name: Configure docker users
       ansible.builtin.include_tasks:
         file: noauto_docker_users.yml
+
+    - name: Configure docker daemon options
+      ansible.builtin.include_tasks:
+        file: noauto_configure_daemon.yml
+      when: docker_daemon_options | length > 0

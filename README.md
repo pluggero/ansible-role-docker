@@ -12,6 +12,13 @@ None.
 
 Available variables are listed below, along with default values (see `defaults/main.yml`):
 
+| Variable | Default | Description |
+|---|---|---|
+| `docker_daemon_json_path` | `/etc/docker/daemon.json` | Path to the Docker daemon config file. |
+| `docker_daemon_options` | `{log-opts: {max-size: "10m", max-file: "3"}}` | Dict merged into `daemon.json`. Set to `{}` to opt out. |
+
+Note: requires `docker_service_manage: true` for daemon changes to restart Docker.
+
 ## Dependencies
 
 None.

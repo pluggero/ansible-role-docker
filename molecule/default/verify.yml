@@ -1,0 +1,14 @@
+---
+- name: Verify
+  hosts: all
+  tasks:
+    - name: Read rendered daemon.json
+      ansible.builtin.slurp:
+        src: /etc/docker/daemon.json
+      register: docker_daemon_json_raw
+
+    - name: Assert log rotation settings are present
+      ansible.builtin.assert:
+        that:
+          - (docker_daemon_json_raw.content | b64decode | from_json)['log-opts']['max-size'] == '10m'
+          - (docker_daemon_json_raw.content | b64decode | from_json)['log-opts']['max-file'] == '3'
