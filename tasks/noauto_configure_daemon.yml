@@ -1,0 +1,17 @@
+---
+- name: Ensure docker config directory exists
+  ansible.builtin.file:
+    path: "{{ docker_daemon_json_path | dirname }}"
+    state: directory
+    mode: "0755"
+  become: true
+
+- name: Configure docker daemon options
+  ansible.builtin.template:
+    src: daemon.json.j2
+    dest: "{{ docker_daemon_json_path }}"
+    owner: root
+    group: root
+    mode: "0644"
+  become: true
+  notify: Restart Docker
