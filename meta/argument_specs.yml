@@ -1,0 +1,50 @@
+---
+argument_specs:
+  main:
+    short_description: "Installs and configures Docker"
+    description: "Installs a basic configuration of docker on various Linux distributions."
+    author:
+      - pluggero
+    options:
+      docker_config_dir:
+        type: "str"
+        default: "{{ ansible_env.HOME }}/.config/docker"
+        description: "Directory used for the Docker user configuration."
+      docker_install_method:
+        type: "str"
+        default: "package"
+        choices: ["package"]
+        description: "Method used to install Docker."
+      docker_users:
+        type: "list"
+        elements: "str"
+        default: ["{{ ansible_user }}"]
+        description: "Users to add to the docker group."
+      docker_service_manage:
+        type: "bool"
+        default: false
+        description: "Whether this role manages (starts/restarts) the docker service."
+      docker_service_enabled:
+        type: "bool"
+        default: false
+        description: "Whether the docker service is enabled on boot."
+      docker_compose_installation:
+        type: "bool"
+        default: true
+        description: "Whether to install the Docker Compose plugin."
+      docker_compose_install_method:
+        type: "str"
+        default: "package"
+        choices: ["package"]
+        description: "Method used to install Docker Compose."
+      docker_daemon_json_path:
+        type: "str"
+        default: "/etc/docker/daemon.json"
+        description: "Path to the Docker daemon config file."
+      docker_daemon_options:
+        type: "dict"
+        default:
+          log-opts:
+            max-size: "10m"
+            max-file: "3"
+        description: "Dict merged into daemon.json. Set to {} to opt out."
